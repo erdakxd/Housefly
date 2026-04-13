@@ -77,8 +77,19 @@ class TestGame(Menu):
 # *********************
 
 class EntitiesMap(Menu):
+    def __init__(self):
+        self.game_map = None
+        self.events = None
+        self.event = None
+
     def run(self):
-        pass
+        self.game_map = entities.load(entities.GAME_MAP)
+        self.events = entities.load(entities.EVENTS)
+        entities.entities_size(self.game_map)
+        
+        self.event = entities.menu_entities(self.events, self.event, self.game_map)
+        stack.pop()
+        return
 
 # *********************
 # *** CREATORS MENU ***

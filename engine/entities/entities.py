@@ -46,6 +46,26 @@ def render_entities(event):
             else:
                 print(row, end=" ")
         print()
+
+def menu_entities(events, event, game_map):
+    while True:
+        print("Choose: Ev-Event/Insert/Delete/Ex-Export\n")
+        choose = get_command()
+        choose = choose.strip().upper()
+        match choose:
+            case 'EV' | 'EVENT':
+                render_entities(event)
+                event = choose_event(events)
+            case 'I' | 'INSERT':
+                render_entities(event)
+                insert_event(event, game_map)
+            case 'D' | 'DELETE':
+                render_entities(event)
+                delete_event(event, game_map)
+            case 'EX' | 'EXPORT':
+                export()
+            case _:
+                print("Wrong choose.\n")
     
 def choose_event(events):
     while True:
@@ -57,6 +77,10 @@ def choose_event(events):
             print("Wrong choose:\n")
 
 def insert_event(event, game_map):
+    if event == None:
+        print("Choose event, before inserting.\n")
+        return
+
     len_y = len(game_map['1'])
     len_x = len(game_map['1'][0])
 
@@ -81,9 +105,29 @@ def insert_event(event, game_map):
             print("Invalid number. You can only type whole numbers equals or bigger than 0.")
             print(f"Also for 'y' smaller than {len_y} and for 'x' smaller than {len_x}.\n")
 
-def delete_event():
-    print("Enter: y, x")
-    choose = get_command("Which event you want to delete?\n")
+def delete_event(event, game_map):
+    len_y = len(game_map['1'])
+    len_x = len(game_map['1'][0])
+
+    while True:
+        print("Enter: y, x")
+        choose = get_command("Which event you want to delete?\n")
+        try:
+            choose = tuple(map(int, choose.split(",")))
+            if choose[0] < 0 or choose[1] < 0 or choose[0] >= len_y or choose[1] >= len_x:
+                print("Invalid number. You can only type whole numbers equals or bigger than 0.")
+                print(f"Also for 'y' smaller than {len_y} and for 'x' smaller than {len_x}.\n")
+            else:
+                if ENTITIES[choose[0]][choose[1]] == [event]:
+                    ENTITIES[choose[0]][choose[1]] = 0
+                return
+        except ValueError:
+            print("Invalid number. You can only type whole numbers equals or bigger than 0.")
+            print(f"Also for 'y' smaller than {len_y} and for 'x' smaller than {len_x}.\n")
+        except IndexError:
+            print("Invalid number. You can only type whole numbers equals or bigger than 0.")
+            print(f"Also for 'y' smaller than {len_y} and for 'x' smaller than {len_x}.\n")
+
 
 def export():
     file_path = "engine/data/entities/entities.json"
