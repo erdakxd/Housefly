@@ -1,10 +1,13 @@
 import engine.core.exceptions as exceptions
 from engine.systems.commands import get_command
 import engine.utils.terminal as terminal
+import test_game
 import engine.creators.character.character_creator as character_creator
 import engine.creators.map.map_creator as map_creator
+import engine.creators.event.event_creator as event_creator
 import engine.editors.map.map_editor as map_editor
 import engine.editors.character.character_editor as character_editor
+import engine.entities.entities as entities
 
 stack = []
 
@@ -26,7 +29,7 @@ class MainMenu(Menu):
                 print("INFO: YOU CAN TYPE FIRST LETTER FROM OPTIONS AS A SHORTCUT.\nDOESN'T MATTER IF IT IS LOWER OR UPPER CASE.\n")
                 while True:
                         
-                        print("Choose: Creator/Editor")
+                        print("Choose: Creator/Ed-Editor/En-Entities/Test Game")
                         choose = get_command("Which creator you want to use?:\n")
                         choose = choose.strip().upper()
                         print()
@@ -36,8 +39,16 @@ class MainMenu(Menu):
                                 stack.append(CreatorsMenu())
                                 return
 
-                            case 'E' | 'EDITOR':
+                            case 'ED' | 'EDITOR':
                                 stack.append(EditorsMenu())
+                                return
+                            
+                            case 'EN' | 'ENTITIES':
+                                stack.append(EntitiesMap())
+                                return
+                            
+                            case 'T' | 'Test Game':
+                                stack.append(TestGame())
                                 return
 
                             case _:
@@ -51,6 +62,24 @@ class MainMenu(Menu):
                 print("No json file in data!\n")
                 continue
 
+# *****************
+# *** TEST GAME ***
+# *****************
+
+class TestGame(Menu):
+    def run(self):
+        test_game.main()
+        stack.pop()
+        return
+
+# *********************
+# *** ENTITIES MENU ***
+# *********************
+
+class EntitiesMap(Menu):
+    def run(self):
+        pass
+
 # *********************
 # *** CREATORS MENU ***
 # *********************
@@ -61,7 +90,7 @@ class CreatorsMenu(Menu):
 
     def run(self):
         while True:
-            print("Choose: Character/Map")
+            print("Choose: Character/Map/Event")
             choose = get_command("Which creator you want to use?:\n")
             choose = choose.strip().upper()
 
@@ -78,6 +107,10 @@ class CreatorsMenu(Menu):
                     stack.append(MapCreator(self.game_map))
                     return
 
+                case 'E' | 'EVENT':
+                    stack.append(EventCreator())
+                    return
+
                 case _:
                     print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
 
@@ -87,7 +120,7 @@ class CreatorsMenu(Menu):
 
 class EditorsMenu(Menu):
     def run(self):
-        print("Choose: Map/Players/Enemies")
+        print("Choose: Map/Players/Ene-Enemies/Ev-Event")
         choose = get_command("Which editor you want to use?:\n")
         choose = choose.strip().upper()
 
@@ -100,13 +133,23 @@ class EditorsMenu(Menu):
                 stack.append(CharacterEditor("engine/data/players/players.json"))
                 return
 
-            case 'E' | 'ENEMIES':
+            case 'ENE' | 'ENEMIES':
                 stack.append(CharacterEditor("engine/data/enemies/enemies.json"))
                 return
+            
+            case 'EV' | 'EVENT':
+                pass
 
             case _:
                 print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
     
+# ^^^^^^^^^^^^^^^^^^^^
+# ^^^ EVENT EDITOR ^^^
+# ^^^^^^^^^^^^^^^^^^^^
+
+class EventEditor(Menu):
+    pass
+
 # ^^^^^^^^^^^^^^^^^^^^^^^^
 # ^^^ CHARACTER EDITOR ^^^
 # ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -126,26 +169,6 @@ class CharacterEditor(Menu):
         choose = character_editor.set_edit(character_dict)
         stack.append(EditCharacter(character_dict, choose, self.character_path))
         return
-        character_list = []
-        for key in character_dict.keys():
-            print(f"{key}")
-            character_list.append(key)
-        
-        choose = get_command("Enter number or name of character you want to edit:\n")
-        try:
-            choose = int(choose)
-            if choose in character_list:
-                stack.append(EditCharacter(choose))
-                return
-            else:
-                print("Wrong 'number' or 'name'.")
-        except ValueError:
-            choose = str(choose)
-            if choose in character_list:
-                stack.append(EditCharacter(choose))
-                return
-            else:
-                print("Wrong 'number' or 'name'.")
 
 # ^^^^^^^^^^^^^^^^^^
 # ^^^ MAP EDITOR ^^^
@@ -179,6 +202,57 @@ class MapEditor(Menu):
                 return
             case _:
                 print(f"\n{choose} is a incorrect choose.\n")
+
+# ^^^^^^^^^^^^^^^^^^^^^
+# ^^^ EVENT CREATOR ^^^
+# ^^^^^^^^^^^^^^^^^^^^^
+
+class EventCreator(Menu):
+    def run(self):
+        choose = event_creator.new_event()
+        data = event_creator.print_dict(choose)
+        player = event_creator.create_event(data)
+        player.logic['movement'] = 'eight_move_direction'
+        player.get_export()
+        stack.pop()
+        return
+
+# ^^^^^^^^^^^^^^^^^^^
+# ^^^ MAP CREATOR ^^^
+# ^^^^^^^^^^^^^^^^^^^
+
+class MapCreator(Menu):
+    def __init__(self, game_map):
+        self.game_map = game_map
+        self.check = True
+
+    def run(self):
+        if self.check:
+            terminal.clear()
+            self.check = False
+        
+        while True:
+            print("Choose: Layers/Size/Game Map/Clear/Export")
+            choose = get_command("What do you want to change?:\n")
+            choose = choose.strip().upper()
+            match choose:
+                case 'L' | 'LAYERS':
+                    stack.append(Layer(self.game_map))
+                    return
+                case 'S' | 'SIZE':
+                    stack.append(Size(self.game_map))
+                    return
+                case 'G' | 'GAME MAP':
+                    stack.append(ShowDict(self.game_map))
+                    return
+                case 'C' | 'CLEAR':
+                    stack.append(Clear(self.game_map))
+                    return
+                case 'E' | 'EXPORT':
+                    stack.append(Export(self.game_map))
+                    return
+                case _:
+                    print(f"\n{choose} is a incorrect choose.\n")
     
 # ^^^^^^^^^^^^^^^^^^^^^^^^^
 # ^^^ CHARACTER CREATOR ^^^
@@ -273,43 +347,6 @@ class Character(Menu):
                     return
                 case 'E' | 'EXPORT':
                     stack.append(Export(self.character))
-                    return
-                case _:
-                    print(f"\n{choose} is a incorrect choose.\n")
-
-# -------------------
-# --- MAP CREATOR ---
-# -------------------
-
-class MapCreator(Menu):
-    def __init__(self, game_map):
-        self.game_map = game_map
-        self.check = True
-
-    def run(self):
-        if self.check:
-            terminal.clear()
-            self.check = False
-        
-        while True:
-            print("Choose: Layers/Size/Game Map/Clear/Export")
-            choose = get_command("What do you want to change?:\n")
-            choose = choose.strip().upper()
-            match choose:
-                case 'L' | 'LAYERS':
-                    stack.append(Layer(self.game_map))
-                    return
-                case 'S' | 'SIZE':
-                    stack.append(Size(self.game_map))
-                    return
-                case 'G' | 'GAME MAP':
-                    stack.append(ShowDict(self.game_map))
-                    return
-                case 'C' | 'CLEAR':
-                    stack.append(Clear(self.game_map))
-                    return
-                case 'E' | 'EXPORT':
-                    stack.append(Export(self.game_map))
                     return
                 case _:
                     print(f"\n{choose} is a incorrect choose.\n")

@@ -1,1 +1,1 @@
-__all__=['run']
+__all__=['run', 'test_game']

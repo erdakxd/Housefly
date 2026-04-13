@@ -28,26 +28,23 @@ def entities_size(game_map):
         for row in range(0, len_x):
             ENTITIES[column].append(0)
 
-def render_entities(events):
-    priority = get_command("Enter priority for entities.\n")
-    priority = int(priority)
-
-    for y in ENTITIES:
-        for x in y:
-            if events != None:
-                if x in [events.keys()]:
-                    print('WORKS')
-                    for event in x:
-                        n = 0
-                        if event['Data']['priority'] == priority:
-                            n += 1
-                            print(events['Data']['symbol'])
-                    if n == 0:
-                        print(0, end=" ")
-                else:
-                    print(x, end=" ")
+def render_entities(event):
+    if event != None:
+        priority = get_command("Enter priority for entities.\n")
+        priority = int(priority)
+    
+    for column in ENTITIES:
+        for row in column:
+            if row != 0:
+                n = 0
+                for data in row:
+                    if data['Data']['priority'] == priority:
+                        print(data['Data']['symbol'], end=" ")
+                        n += 1
+                if n == 0:
+                    print(0, end=" ")
             else:
-                print(x, end=" ")
+                print(row, end=" ")
         print()
     
 def choose_event(events):
