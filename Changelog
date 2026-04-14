@@ -1,3 +1,18 @@
+*** 0.1.2 ***
+### Added
+    - Test Game to engine
+    - Entities to engine
+    - Event creator to engine
+    - 'layer' and 'type' for character template and event
+
+### Notes
+    - Test game is using data and logic. For now only character movement.
+    - Rendering all layers with entities.
+    - Code is currentyl a sphagetti but is working somehow.
+    - and other small changes
+
+
+
 *** 0.1.1 ***
 ### Added
     - Entities
@@ -10,7 +25,7 @@
     - Character Creator
 
 ### Notes
-    - New added elements are still buggy and are not finished
+    - New added elements are still buggy and are not finished.
     - Character Creator has now for a character template 'priority'. This data is for entities visibility.
 
 *** 0.1.0 ***
