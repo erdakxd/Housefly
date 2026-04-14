@@ -1,22 +1,45 @@
-def eight_move_direction(arg):
+def eight_move_direction(arg, entity, entities):
     MOVE_MAP = {
-        "W": (-1, 0),
-        "S": (1, 0),
-        "A": (0, -1),
-        "D": (0, 1)
+        frozenset(("W")): (-1, 0),
+        frozenset(("S")): (1, 0),
+        frozenset(("A")): (0, -1),
+        frozenset(("D")): (0, 1),
+        frozenset(("A", "W")): (-1, -1),
+        frozenset(("D", "W")): (-1, 1),
+        frozenset(("A", "S")): (1, -1),
+        frozenset(("D", "S")): (1, 1),
     }
 
-    dy = 0
-    dx = 0
+    arg = frozenset(arg)
+    cords = MOVE_MAP.get(arg, (0,0))
 
-    for key in MOVE_MAP.keys():
-        if arg == MOVE_MAP[key]:
-            my, mx = MOVE_MAP[key]
-            
-            dy += my
-            dx += mx
+    y_entities = 0
+    for column in entities:
+        x_entities = 0
+        for row in column:
+            if row != 0:
+                
+                entities[y_entities][x_entities][0]['Data']['y'] += cords[0]
+                entities[y_entities][x_entities][0]['Data']['x'] += cords[1]
+                
+                new_y_entities = y_entities + cords[0]
+                new_x_entities = x_entities + cords[1]
+                old_y_entities = y_entities
+                old_x_entities = x_entities
 
-    
+                print(new_y_entities)
+                print(new_x_entities)
+                entities[new_y_entities][new_x_entities] = [entity]
+                entities[old_y_entities][old_x_entities].remove(entity)
+                if entities[old_y_entities][old_x_entities] == []:
+                    entities[old_y_entities][old_x_entities] = 0
+                    
+                return
+
+            x_entities += 1
+        y_entities += 1
+
+    print(entities)
 
 
 # def player_movement(player_y, player_x, y_arg, x_arg):

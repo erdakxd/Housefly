@@ -79,7 +79,9 @@ def create_event(data):
 def empty_data():
     return {"name": None,
             "id": None,
+            "type": "object",
             "priority": 1,
+            "layer": 1,
             "symbol": None,
             "y": 0,
             "x": 0

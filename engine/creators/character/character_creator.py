@@ -18,7 +18,9 @@ class Char:
         return {
             'name': self.name,
             'id': self.id,
+            'type': self.type,
             'priority': self.priority,
+            'layer': self.layer,
             'y': self.y,
             'x': self.x,
             'symbol': self.symbol,
@@ -32,7 +34,9 @@ class Player(Char):
         super().__init__()
 
         self.name = name
+        self.type = 'player'
         self.priority = 1
+        self.layer = 1
         self.y = 0
         self.x = 0
         self.symbol = symbol
@@ -52,7 +56,9 @@ class Enemy(Char):
         super().__init__()
 
         self.name = name
+        self.type = 'enemy'
         self.priority = 1
+        self.layer = 1
         self.y = 0
         self.x = 0
         self.symbol = symbol

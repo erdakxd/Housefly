@@ -97,6 +97,8 @@ def insert_event(event, game_map):
                     ENTITIES[choose[0]][choose[1]] = [event]
                 else:
                     ENTITIES[choose[0]][choose[1]].append(event)
+                event['Data']['y'] = choose[0]
+                event['Data']['x'] = choose[1]
                 return
         except ValueError:
             print("Invalid number. You can only type whole numbers equals or bigger than 0.")

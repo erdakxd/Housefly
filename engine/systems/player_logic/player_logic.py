@@ -7,12 +7,10 @@ EIGHT_MOVE_DIRECTION_COMMANDS = {
     frozenset(("S")): player_func.eight_move_direction,
     frozenset(("A")): player_func.eight_move_direction,
     frozenset(("D")): player_func.eight_move_direction,
-    frozenset(("A, W")): player_func.eight_move_direction,
-    frozenset(("D, W")): player_func.eight_move_direction,
-    frozenset(("A, S")): player_func.eight_move_direction,
-    frozenset(("D, S")): player_func.eight_move_direction,
+    frozenset(("A", "W")): player_func.eight_move_direction,
+    frozenset(("D", "W")): player_func.eight_move_direction,
+    frozenset(("A", "S")): player_func.eight_move_direction,
+    frozenset(("D", "S")): player_func.eight_move_direction,
 }
 
-def func_start(prompt):
-    if prompt in GAME_COMMANDS:
-        GAME_COMMANDS[prompt]()
+DICT_COMMANDS = {"EIGHT_MOVE_DIRECTION_COMMANDS": EIGHT_MOVE_DIRECTION_COMMANDS}
