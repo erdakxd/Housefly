@@ -47,7 +47,7 @@ class MainMenu(Menu):
                                 stack.append(EntitiesMap())
                                 return
                             
-                            case 'T' | 'Test Game':
+                            case 'T' | 'TEST GAME':
                                 stack.append(TestGame())
                                 return
 

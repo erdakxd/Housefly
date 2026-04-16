@@ -1,5 +1,6 @@
 import json
 import os
+import copy
 import engine.utils.terminal as terminal
 from engine.systems.commands import get_command
 
@@ -10,6 +11,11 @@ from engine.systems.commands import get_command
 GAME_MAP = "engine/data/map/game_map.json"
 EVENTS = "engine/data/event_test.json"
 ENTITIES = []
+TEST_ENTITIES = []
+
+# ***************   
+# *** CLASSES ***
+# ***************
 
 # *****************
 # *** FUNCTIONS ***
@@ -97,8 +103,11 @@ def insert_event(event, game_map):
                     ENTITIES[choose[0]][choose[1]] = [event]
                 else:
                     ENTITIES[choose[0]][choose[1]].append(event)
+
                 event['Data']['y'] = choose[0]
                 event['Data']['x'] = choose[1]
+
+                TEST_ENTITIES.append(copy.deepcopy(event))
                 return
         except ValueError:
             print("Invalid number. You can only type whole numbers equals or bigger than 0.")
@@ -133,8 +142,7 @@ def delete_event(event, game_map):
 
 def export():
     file_path = "engine/data/entities/entities.json"
-
-    data = ENTITIES
+    data = TEST_ENTITIES
 
     with open(file=file_path, mode="w") as file:
         json.dump(data, file, indent=4)

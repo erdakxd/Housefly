@@ -38,6 +38,8 @@ def main():
     game_map = load(GAME_MAP)
     ENTITIES = load(ENTITIES_FILE)
 
+    print(ENTITIES)
+
     while True:
         LAYERS.clear()
         RENDER.clear()
@@ -80,32 +82,21 @@ def main():
                         else:
                             RENDER[y][x] = row
 
-                        if ENTITIES[y][x] == 0:
-                            x += 1
-                            continue
-                        elif ENTITIES[y][x][0]['Data']['layer'] == z and y == ENTITIES[y][x][0]['Data']['y'] and x == ENTITIES[y][x][0]['Data']['x']:
-                            y_event = ENTITIES[y][x][0]['Data']['y']
-                            x_event = ENTITIES[y][x][0]['Data']['x']
-                            print("WORKS")
-                            print(y_event)
-                            print(x_event)
-                            RENDER[y][x] = ENTITIES[y_event][x_event][0]['Data']['symbol']
+                        for entity in ENTITIES:
+                            if entity['Data']['layer'] == z and entity['Data']['y'] == y and entity['Data']['x'] == x:
+                                RENDER[y][x] = entity['Data']['symbol']
 
                     x += 1
                 y += 1
             z += 1
 
         # --- EVENT LOGIC CHECK ---
-        for column in ENTITIES:
-            for row in column:
-                if row == 0:
+        for entity in ENTITIES:
+            for value in entity['Logic'].values():
+                if value == None:
                     continue
-                else:
-                    for value in row[0]['Logic'].values():
-                        if value == None:
-                            continue
-                        elif value.upper() + "_COMMANDS" in MAP_LOGIC:
-                            GAME_COMMANDS.update(MAP_LOGIC[value.upper() + "_COMMANDS"])                 
+                elif value.upper() + "_COMMANDS" in MAP_LOGIC:
+                    GAME_COMMANDS.update(MAP_LOGIC[value.upper() + "_COMMANDS"])    
                     
         # RENDERING
         for y in RENDER:
@@ -122,13 +113,10 @@ def main():
         # PLAYER LOGIC
         choose = get_command()
         choose = choose.upper()
-        for column in ENTITIES:
-            for row in column:
-                if row == 0:
-                    continue
-                else:
-                    if row[0]['Data']['type'] == 'player':
-                        PLAYERS.append(row[0])
+        for entity in ENTITIES:
+            if entity['Data']['type'] == 'player':
+                PLAYERS.append(entity)
+
         for player in PLAYERS:
             func_start(choose, player, ENTITIES)
 
