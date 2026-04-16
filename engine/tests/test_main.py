@@ -1,7 +1,6 @@
 import json
-import os
-import subprocess
 import engine.systems
+import engine.utils.terminal as terminal
 from engine.systems.commands import get_command
 import engine.systems.player_logic.player_logic as player_logic
 import engine.systems.player_logic.player_func
@@ -38,9 +37,9 @@ def main():
     game_map = load(GAME_MAP)
     ENTITIES = load(ENTITIES_FILE)
 
-    print(ENTITIES)
-
     while True:
+        terminal.clear()
+
         LAYERS.clear()
         RENDER.clear()
         PLAYERS.clear()
@@ -76,15 +75,27 @@ def main():
                 for row in column:
                     if x == len(RENDER[y]):
                         RENDER[y].append(row)
+
                     else:
+                        for entity in ENTITIES:
+                            e = entity['Data']
+                            if e['layer'] == z and e['y'] == y and e['x'] == x:
+                                RENDER[y][x] = e['symbol']
+
                         if LAYERS[z][y][x] == '0' and RENDER[y][x] != '0':
                             pass
                         else:
                             RENDER[y][x] = row
 
-                        for entity in ENTITIES:
-                            if entity['Data']['layer'] == z and entity['Data']['y'] == y and entity['Data']['x'] == x:
-                                RENDER[y][x] = entity['Data']['symbol']
+                        # for entity in ENTITIES:
+                        #     if LAYERS[z][y][x] == '0' and RENDER[y][x] != '0':
+                        #         pass
+                        #     else:
+                        #         if LAYERS[z][y][x] != entity['Data']['symbol']:
+                        #             RENDER[y][x] = row
+
+                        #         if entity['Data']['layer'] == z and entity['Data']['y'] == y and entity['Data']['x'] == x:
+                        #             RENDER[y][x] = entity['Data']['symbol']
 
                     x += 1
                 y += 1
@@ -95,20 +106,14 @@ def main():
             for value in entity['Logic'].values():
                 if value == None:
                     continue
-                elif value.upper() + "_COMMANDS" in MAP_LOGIC:
-                    GAME_COMMANDS.update(MAP_LOGIC[value.upper() + "_COMMANDS"])    
+                elif value + "_commands" in MAP_LOGIC:
+                    GAME_COMMANDS.update(MAP_LOGIC[value + "_commands"])    
                     
         # RENDERING
         for y in RENDER:
             for x in y:
                 print(x, end=' ')
             print()
-            
-        # print()
-        # for y in ENTITIES:
-        #     for x in y:
-        #         print(x, end=" ")
-        #     print()
             
         # PLAYER LOGIC
         choose = get_command()

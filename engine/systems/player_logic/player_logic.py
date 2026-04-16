@@ -13,4 +13,4 @@ EIGHT_MOVE_DIRECTION_COMMANDS = {
     frozenset(("D", "S")): player_func.eight_move_direction,
 }
 
-DICT_COMMANDS = {"EIGHT_MOVE_DIRECTION_COMMANDS": EIGHT_MOVE_DIRECTION_COMMANDS}
+DICT_COMMANDS = {"eight_move_direction_commands": EIGHT_MOVE_DIRECTION_COMMANDS}
