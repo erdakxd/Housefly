@@ -22,3 +22,86 @@ def random_movement(event, _, game_map):
         event['Data']['x'] += dx
         return
     
+def a_star(event, _, game_map, target):
+    pos_y = event['Data']['y']
+    pos_x = event['Data']['x']
+
+    tar_y = target['Data']['y']
+    tar_x = target['Data']['x']
+
+    start = (pos_y,pos_x)
+    g_dict = {}
+    came_from = {}
+    found = False
+
+    open_list = [start]
+    g_dict[start] = 0
+    goal = (tar_y, tar_x)
+    def get_neighbors(node):
+        y, x = node
+        return [
+            (y, x+1),
+            (y+1, x),
+            (y, x-1),
+            (y-1, x),
+            (y-1, x-1),
+            (y-1, x+1),
+            (y+1, x+1),
+            (y+1, x-1)]
+
+    # H DICT
+    def heuristic(node):
+        y, x = node
+        return abs(y - goal[0]) + abs(x - goal[1])
+    def is_walkable(node):
+        y, x = node
+
+        if y < 0 or y >= len(game_map) or x < 0 or x >= len(game_map[0]):
+            return False
+        
+        if node == goal:
+            return True
+        
+        return True
+    
+    # G DICT
+    while open_list:
+        current = min(open_list, key=lambda node: g_dict[node] + heuristic(node))
+        if current == goal:
+            found = True
+            break
+        neighbors = get_neighbors(current)
+        
+        for neighbor in neighbors:
+            walkable_check = is_walkable(neighbor)
+            if walkable_check == False:
+                continue
+
+            new_g = g_dict[current] + 1
+
+            if neighbor not in g_dict or new_g < g_dict[neighbor]:
+                g_dict[neighbor] = new_g
+                came_from[neighbor] = current
+
+                if neighbor not in open_list:
+                    open_list.append(neighbor)
+        
+        open_list.remove(current)
+    path = []
+    node = goal
+    if not found:
+        return
+
+    while node != start:
+        path.append(node)
+        node = came_from[node]
+
+    path.append(start)
+    path.reverse()
+
+    if len(path) > 1:
+        next_step = path[1]
+        if next_step == (tar_y, tar_x):
+            next_step = path[0]
+        event['Data']['y'], event['Data']['x'] = next_step
+    

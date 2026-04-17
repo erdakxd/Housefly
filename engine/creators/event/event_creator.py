@@ -35,11 +35,11 @@ class EventCreator():
         e_type = self.data['type']
         match e_type:
             case 'player':
-                file_path = "engine/data/events/events_player.json" 
+                file_path = "engine/data/events/events_players.json" 
             case 'enemy':
-                file_path = "engine/data/events/events_enemy.json" 
+                file_path = "engine/data/events/events_enemies.json" 
             case 'object':
-                file_path = "engine/data/events/events_object.json"
+                file_path = "engine/data/events/events_objects.json"
 
         data = {}
 
