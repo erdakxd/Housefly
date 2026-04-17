@@ -1,7 +1,5 @@
 import engine.systems.player_logic.player_func as player_func
 
-GAME_COMMANDS = {}
-
 EIGHT_MOVE_DIRECTION_COMMANDS = {
     frozenset(("W")): player_func.eight_move_direction,
     frozenset(("S")): player_func.eight_move_direction,

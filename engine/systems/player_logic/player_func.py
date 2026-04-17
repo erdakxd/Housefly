@@ -1,4 +1,4 @@
-def eight_move_direction(arg, entity, entities):
+def eight_move_direction(arg, entity, _):
     MOVE_MAP = {
         frozenset(("W")): (-1, 0),
         frozenset(("S")): (1, 0),

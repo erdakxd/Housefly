@@ -31,11 +31,15 @@ class EventCreator():
         self.data = data
         self.logic = logic
 
-    def set_sprite(self, character):
-        print(self.data[character]['symbol'])
-
     def get_export(self):
-        file_path = "engine/data/event_test.json"
+        e_type = self.data['type']
+        match e_type:
+            case 'player':
+                file_path = "engine/data/events/events_player.json" 
+            case 'enemy':
+                file_path = "engine/data/events/events_enemy.json" 
+            case 'object':
+                file_path = "engine/data/events/events_object.json"
 
         data = {}
 
@@ -53,10 +57,10 @@ class EventCreator():
 
 def new_event():
     while True:
-        print("Choose: Player/Enemy/Empty")
+        print("Choose: Player/En-Enemy/Em-Empty")
         choose = get_command("Which template for event you want to create?:\n")
         choose = choose.strip().upper()
-        if choose in ("P", "PLAYER"):
+        if choose in ("P", "PLAYER", "EN", "ENEMY", "EM", "EMPTY"):
             return choose
         else:
             print("Wrong choose.\n")
@@ -72,6 +76,19 @@ def print_dict(choose):
                 return players[character]
             else:
                 print("Wrong choose.\n")
+
+        elif choose in ("EN", "ENEMY"):
+            with open(ENEMY_PATH, "r") as f:
+                enemies = json.load(f)
+            print([enemy for enemy in enemies])
+            character = get_command("Choose created character\n")
+            if character in ([k for k in enemies.keys()]):
+                return enemies[character]
+            else:
+                print("Wrong choose.\n")
+
+        elif choose in ("EM", "EMPTY"):
+            return empty_data()
 
 def create_event(data):
     return EventCreator(data, empty_logic())

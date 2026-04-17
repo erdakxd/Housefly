@@ -9,7 +9,9 @@ from engine.systems.commands import get_command
 # *****************
 
 GAME_MAP = "engine/data/map/game_map.json"
-EVENTS = "engine/data/event_test.json"
+PLAYERS = "engine/data/events/events_players.json"
+ENEMIES = "engine/data/events/events_enemies.json"
+OBJECTS = "engine/data/events/events_objects.json"
 ENTITIES = []
 TEST_ENTITIES = []
 
@@ -74,13 +76,36 @@ def menu_entities(events, event, game_map):
                 print("Wrong choose.\n")
     
 def choose_event(events):
+    def local_func(events):
+        while True:
+            print([event for event in events])
+            choose = get_command("Enter event:\n")
+            if choose in (events):
+                return events[choose]
+            else:
+                print("Wrong choose:\n")
+
     while True:
-        print([event for event in events])
-        choose = get_command("Enter event:\n")
-        if choose in (events):
-            return events[choose]
-        else:
-            print("Wrong choose:\n")
+        print("Choose: Player/Enemy/Object")
+        choose = get_command()
+        choose = choose.strip().upper()
+        match choose:
+            case 'P' | 'PLAYER':
+                players = load(PLAYERS)
+                events = local_func(players)
+                return events
+            case 'E' | 'ENEMY':
+                enemies = load(ENEMIES)
+                events = local_func(enemies)
+                return events
+            case 'O' | 'OBJECT':
+                objects = load(OBJECTS)
+                events = local_func(objects)
+                return events
+            case _:
+                print("Wrong choose.\n")
+
+        
 
 def insert_event(event, game_map):
     if event == None:

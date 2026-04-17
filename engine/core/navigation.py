@@ -84,7 +84,6 @@ class EntitiesMap(Menu):
 
     def run(self):
         self.game_map = entities.load(entities.GAME_MAP)
-        self.events = entities.load(entities.EVENTS)
         entities.entities_size(self.game_map)
         
         self.event = entities.menu_entities(self.events, self.event, self.game_map)
@@ -222,9 +221,9 @@ class EventCreator(Menu):
     def run(self):
         choose = event_creator.new_event()
         data = event_creator.print_dict(choose)
-        player = event_creator.create_event(data)
-        player.logic['movement'] = 'eight_move_direction'
-        player.get_export()
+        event = event_creator.create_event(data)
+        event.logic['movement'] = 'eight_move_direction'
+        event.get_export()
         stack.pop()
         return
 

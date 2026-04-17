@@ -3,16 +3,13 @@ import engine.systems
 import engine.utils.terminal as terminal
 from engine.systems.commands import get_command
 import engine.systems.player_logic.player_logic as player_logic
-import engine.systems.player_logic.player_func
+import engine.systems.ai_logic.ai_logic as ai_logic
 
 GAME_MAP = "engine/data/map/game_map.json"
 ENTITIES_FILE = "engine/data/entities/entities.json"
 MAP_LOGIC = player_logic.DICT_COMMANDS
 GAME_COMMANDS = {}
-
-LAYERS = []
-RENDER = []
-PLAYERS = []
+AI_LOGIC = ai_logic.AI_LOGIC
 
 # *****************
 # *** FUNCTIONS ***
@@ -22,11 +19,17 @@ def load(path):
     with open(path, "r") as f:
         return json.load(f)
     
-def func_start(prompt, entity, entities):
+def func_start(prompt, entity, entities, game_map):
     command = frozenset(prompt)
     if command in GAME_COMMANDS.keys():
         func_return = GAME_COMMANDS[command](prompt, entity, entities)
         return func_return
+    if prompt == 'AI':
+        for value in entity['Logic'].values(): 
+            if value in AI_LOGIC.keys():
+                func_return = AI_LOGIC[value](entity, entities, game_map)
+                return func_return
+        
 
 # ************
 # *** MAIN ***
@@ -36,6 +39,10 @@ def main():
     # --- IMPORTING JSON FILES
     game_map = load(GAME_MAP)
     ENTITIES = load(ENTITIES_FILE)
+    LAYERS = []
+    RENDER = []
+    PLAYERS = []
+    ENEMIES = []
 
     while True:
         terminal.clear()
@@ -43,6 +50,7 @@ def main():
         LAYERS.clear()
         RENDER.clear()
         PLAYERS.clear()
+        ENEMIES.clear()
 
         # --- PUTTING JSON MAP TO LAYERS LIST ---
         z = 0
@@ -87,16 +95,6 @@ def main():
                         else:
                             RENDER[y][x] = row
 
-                        # for entity in ENTITIES:
-                        #     if LAYERS[z][y][x] == '0' and RENDER[y][x] != '0':
-                        #         pass
-                        #     else:
-                        #         if LAYERS[z][y][x] != entity['Data']['symbol']:
-                        #             RENDER[y][x] = row
-
-                        #         if entity['Data']['layer'] == z and entity['Data']['y'] == y and entity['Data']['x'] == x:
-                        #             RENDER[y][x] = entity['Data']['symbol']
-
                     x += 1
                 y += 1
             z += 1
@@ -115,15 +113,21 @@ def main():
                 print(x, end=' ')
             print()
             
-        # PLAYER LOGIC
+        # LOGIC
         choose = get_command()
         choose = choose.upper()
         for entity in ENTITIES:
             if entity['Data']['type'] == 'player':
                 PLAYERS.append(entity)
+            if entity['Data']['type'] == 'enemy':
+                ENEMIES.append(entity)
 
         for player in PLAYERS:
-            func_start(choose, player, ENTITIES)
+            func_start(choose, player, ENTITIES, RENDER)
+        
+        for enemy in ENEMIES:
+            func_start('AI', enemy, ENTITIES, RENDER)
+
 
 if __name__ == '__main__':
     main()
