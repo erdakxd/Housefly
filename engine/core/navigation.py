@@ -7,6 +7,7 @@ import engine.creators.map.map_creator as map_creator
 import engine.creators.event.event_creator as event_creator
 import engine.editors.map.map_editor as map_editor
 import engine.editors.character.character_editor as character_editor
+import engine.editors.event.event_editor as event_editor
 import engine.entities.entities as entities
 
 stack = []
@@ -148,7 +149,8 @@ class EditorsMenu(Menu):
                 return
             
             case 'EV' | 'EVENT':
-                pass
+                stack.append(EventEditor())
+                return
 
             case _:
                 print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
@@ -158,7 +160,16 @@ class EditorsMenu(Menu):
 # ^^^^^^^^^^^^^^^^^^^^
 
 class EventEditor(Menu):
-    pass
+    def __init__(self):
+        self.choose = None
+        self.path = None
+
+    def run(self):
+        choose = event_editor.choose_event()
+        if choose in ('P', 'PlAYERS', 'E', 'ENEMIES', 'O', 'OBJECTS'):
+            self.choose, self.path = event_editor.initial_choice(choose)
+            stack.append(ChoiceEvent(self.choose, self.path))
+            return
 
 # ^^^^^^^^^^^^^^^^^^^^^^^^
 # ^^^ CHARACTER EDITOR ^^^
@@ -297,6 +308,56 @@ class CharacterCreator(Menu):
                 case _:
                     print(f"'{choose}' is not correct choose. Please choose player or enemy.\n")
 
+# --------------------
+# --- CHOICE EVENT ---
+# --------------------
+
+class ChoiceEvent(Menu):
+    def __init__(self, file, path):
+        self.file = file
+        self.path = path
+
+        self.event = None
+        self.event_name = None
+
+    def run(self):
+        self.event, self.event_name = event_editor.menu_event_choice(self.file)
+        stack.append(EditEvent(self.file, self.path, self.event, self.event_name))
+        return
+
+class EditEvent(Menu):
+    def __init__(self, file, path, event, event_name):
+        self.file = file
+        self.path = path
+        self.event = event
+        self.event_name = event_name
+        self.action_choice = None
+
+    def run(self):
+        self.action_choice = event_editor.menu_action_choice()
+        stack.append(FieldChoiceEvent(self.file, self.path, self.event, self.event_name, self.action_choice))
+        return
+
+class FieldChoiceEvent(Menu):
+    def __init__(self, file, path, event, event_name, action_choice):
+        self.file = file
+        self.path = path
+        self.event = event
+        self.event_name = event_name
+        self.action_choice = action_choice
+        self.field_choice = None
+
+    def run(self):
+        self.field_choice = event_editor.menu_field_choice(self.action_choice, self.event, self.event_name)
+        print(self.field_choice)
+        if self.field_choice in ('S', 'SAVE'):
+            event_editor.save(self.file, self.event_name, self.path)
+            stack.pop()
+            return
+        else:
+            stack.append(Edit('event', self.field_choice, self.event, self.event_name, self.action_choice))
+            return
+    
 # ----------------------
 # --- EDIT CHARACTER ---
 # ----------------------
@@ -316,7 +377,7 @@ class EditCharacter(Menu):
         if choose in ('s', 'save'):
             stack.append(SaveForEdit(self.character_dict, self.character, self.file_path))
         else:
-            stack.append(Edit(choose, self.character, self.character_dict))
+            stack.append(Edit('character', choose, self.character, self.character_dict))
         return
 
 # -------------------------
@@ -364,17 +425,29 @@ class Character(Menu):
 # --- GENERAL CLASSES ---
 
 class Edit(Menu):
-    def __init__(self, choose, character, dictionary):
+    def __init__(self, editor, choose, character, dictionary, action_choice):
+        self.editor = editor
         self.choose = choose
         self.character = character
         self.dictionary = dictionary
+        self.action_choice = action_choice
 
     def run(self):
-        edit_choose = character_editor.edit(self.choose, self.character, self.dictionary)
-        self.dictionary[self.character][self.choose] = edit_choose
-        stack.pop()
-        print('Works')
-        return
+        match self.editor:
+            case 'character':
+                edit_choose = character_editor.edit(self.choose, self.character, self.dictionary)
+                self.dictionary[self.character][self.choose] = edit_choose
+                stack.pop()
+                return
+            case 'event':
+                edit_choose = event_editor.edit(self.choose, self.character, self.action_choice)
+                match self.action_choice:
+                    case 'D' | 'DATA':
+                        self.character['Data'][self.choose] = edit_choose
+                    case 'L' | 'LOGIC':
+                        self.character['Logic'][self.choose] = edit_choose
+                stack.pop()
+                return
 
 class Name(Menu):
     def __init__(self, character):

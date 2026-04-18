@@ -1,3 +1,16 @@
+*** 0.2.0 ***
+### Added
+    - Logic random movement and A* for AI
+    - Event Editor
+
+### Fixed
+    - Rendering
+    
+#### Notes
+    - New features: Event creator (not completed), Event editor, Test game, entities, simple logic
+    - Refactored code in entities, test_main and in logic.
+    - Next update I will work for collision objects and adding condition logic.
+
 *** 0.1.2 ***
 ### Added
     - Test Game to engine
@@ -8,7 +21,7 @@
 ### Notes
     - Test game is using data and logic. For now only character movement.
     - Rendering all layers with entities.
-    - Code is currentyl a sphagetti but is working somehow.
+    - Code is currently a sphagetti but is working somehow.
     - and other small changes
 
 

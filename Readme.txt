@@ -17,6 +17,11 @@ FEATURES
     2. Character Creator
     3. Map Creator
     4. Character Editor
+    5. Event Creator (In works)
+    6. Event Editor
+    7. Entities
+    8. Simple logic
+    9. Test Game
 
 Debugger
     To enter debugger, enter - "c housefly"
@@ -28,11 +33,9 @@ Debugger
 
 IN WORKS
     1. Event Creator
-    2. Event Editor
-    3. Map Editor
-    4. Run Test game
-    5. Create/Save Project
-    6. Export Game
+    2. Map Editor
+    3. Create/Save Project
+    4. Export Game
 
 -- Q&A --
 WHY AM I CREATING GAME ENGINE?
