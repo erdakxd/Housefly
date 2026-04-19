@@ -26,42 +26,33 @@ class MainMenu(Menu):
     def run(self):
         terminal.clear()
         while True:
-            try:
-                print("INFO: YOU CAN TYPE FIRST LETTER FROM OPTIONS AS A SHORTCUT.\nDOESN'T MATTER IF IT IS LOWER OR UPPER CASE.\n")
-                while True:
+            print("INFO: YOU CAN TYPE FIRST LETTER FROM OPTIONS AS A SHORTCUT.\nDOESN'T MATTER IF IT IS LOWER OR UPPER CASE.\n")
+            while True:
                         
-                        print("Choose: Creator/Ed-Editor/En-Entities/Test Game")
-                        choose = get_command("Which creator you want to use?:\n")
-                        choose = choose.strip().upper()
-                        print()
+                    print("Choose: Creator/Ed-Editor/En-Entities/Test Game")
+                    choose = get_command("Which creator you want to use?:\n")
+                    choose = choose.strip().upper()
+                    print()
 
-                        match choose:
-                            case 'C' | 'CREATOR':
-                                stack.append(CreatorsMenu())
-                                return
+                    match choose:
+                        case 'C' | 'CREATOR':
+                            stack.append(CreatorsMenu())
+                            return
 
-                            case 'ED' | 'EDITOR':
-                                stack.append(EditorsMenu())
-                                return
+                        case 'ED' | 'EDITOR':
+                            stack.append(EditorsMenu())
+                            return
                             
-                            case 'EN' | 'ENTITIES':
-                                stack.append(EntitiesMap())
-                                return
+                        case 'EN' | 'ENTITIES':
+                            stack.append(EntitiesMap())
+                            return
                             
-                            case 'T' | 'TEST GAME':
-                                stack.append(TestGame())
-                                return
+                        case 'T' | 'TEST GAME':
+                            stack.append(TestGame())
+                            return
 
-                            case _:
-                                print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
-            except exceptions.ExitTool:
-                terminal.clear()
-                print("Returning to main menu.\n")
-                continue
-            except exceptions.NoJsonFile:
-                terminal.clear()
-                print("No json file in data!\n")
-                continue
+                        case _:
+                            print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
 
 # *****************
 # *** TEST GAME ***
@@ -659,6 +650,10 @@ def main():
         except exceptions.NoJsonFile:
             print('No Json File.')
             stack.pop()
+        except exceptions.ExitMenu:
+            stack.clear()
+            stack.append(MainMenu())
+
 
 if __name__ == '__main__':
     main()

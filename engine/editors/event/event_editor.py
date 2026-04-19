@@ -141,8 +141,7 @@ def save(dictionary, character, file_path):
         match choose:
             case 'Y' | 'YES':
                 # try:
-                    value = dictionary[character]
-                    new_key = f"{1}. {value['Data']['name']}"
+                    new_key = character
 
                     dictionary[new_key] = dictionary.pop(character)
                     data = dict(sorted(dictionary.items()))

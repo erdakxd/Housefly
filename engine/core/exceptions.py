@@ -1,4 +1,4 @@
-class ExitTool(Exception):
+class ExitMenu(Exception):
     pass
 
 class NoJsonFile(Exception):

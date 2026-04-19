@@ -38,13 +38,29 @@ def exit_debugger():
     print("Cheese!\n")
     raise exceptions.ExitDebugger()
 
+def exit_menu():
+    while True:
+        print('\nChoose: Yes/No')
+        choose = input('Do you want to back to menu?:\n')
+        choose = choose.upper()
+        match choose:
+            case 'Y' | 'YES':
+                raise exceptions.ExitMenu()
+
+            case 'N' | 'NO':
+                exit_debugger()
+
+            case _:
+                print(f"'{choose}' is a incorrect choose. Please choose yes or no.")
+    
 
 GLOBAL_COMMANDS = {
     "break": exit_loop,
     "step": next_line,
     "back": back_menu,
     "exit": exit_program,
-    "c mouse": exit_debugger
+    "c mouse": exit_debugger,
+    "exit menu": exit_menu
 }
 
 def get_command(prompt="> "):
@@ -52,20 +68,6 @@ def get_command(prompt="> "):
     command = input(prompt)
     if command == "c housefly":
         debugger(command)
-    elif command == 'exit menu':
-        while True:
-            print('\nChoose: Yes/No')
-            choose = input('Do you want to back to menu?:\n')
-            choose = choose.upper()
-            match choose:
-                case 'Y' | 'YES':
-                    raise exceptions.ExitTool()
-
-                case 'N' | 'NO':
-                    return command
-
-                case _:
-                    print(f"'{choose}' is a incorrect choose. Please choose yes or no.")
     else:
         return command
     
