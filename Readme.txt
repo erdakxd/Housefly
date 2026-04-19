@@ -17,7 +17,7 @@ FEATURES
     2. Character Creator
     3. Map Creator
     4. Character Editor
-    5. Event Creator (In works)
+    5. Event Creator
     6. Event Editor
     7. Entities
     8. Simple logic

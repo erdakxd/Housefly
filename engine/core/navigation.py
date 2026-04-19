@@ -233,7 +233,6 @@ class EventCreator(Menu):
         choose = event_creator.new_event()
         data = event_creator.print_dict(choose)
         event = event_creator.create_event(data)
-        event.logic['movement'] = 'eight_move_direction'
         event.get_export()
         stack.pop()
         return
@@ -421,6 +420,12 @@ class Character(Menu):
                     return
                 case _:
                     print(f"\n{choose} is a incorrect choose.\n")
+
+# ---------------------
+# --- EVENT CREATOR ---
+# ---------------------
+class Event(Menu):
+    pass
 
 # --- GENERAL CLASSES ---
 

@@ -32,7 +32,9 @@ class EventCreator():
         self.logic = logic
 
     def get_export(self):
-        e_type = self.data['type']
+        for value in self.data.values():
+            e_type = value['type']
+            break
         match e_type:
             case 'player':
                 file_path = "engine/data/events/events_players.json" 
@@ -42,9 +44,8 @@ class EventCreator():
                 file_path = "engine/data/events/events_objects.json"
 
         data = {}
-
-        data[f"{1}. {self.data['name']}"] = {"Data": self.data,
-                                             "Logic": self.logic}
+        for key, value in self.data.items():
+            data[key] = {'Data': value, 'Logic': self.logic}
 
         with open(file=file_path, mode="w") as file:
             json.dump(data, file, indent=4)
@@ -66,14 +67,28 @@ def new_event():
             print("Wrong choose.\n")
 
 def print_dict(choose):
+    data = {}
+    n = 1
     while True:
         if choose in ("P", "PLAYER"):
+            print(data)
             with open(PLAYER_PATH, "r") as f:
                 players = json.load(f)
             print([player for player in players])
             character = get_command("Choose created character\n")
             if character in ([k for k in players.keys()]):
-                return players[character]
+                name = players[character]['name']
+                data[f"{n}. {name}"] = players[character]
+                print("Choose: Yes/No\n")
+                another = get_command("Do you want to add another character as event?:\n")
+                another = another.strip().upper()
+                match another:
+                    case 'Y' | 'YES':
+                        n += 1
+                    case 'N' | 'NO':
+                        return data
+                    case _:
+                        print("Wrong choose.")
             else:
                 print("Wrong choose.\n")
 
@@ -83,12 +98,29 @@ def print_dict(choose):
             print([enemy for enemy in enemies])
             character = get_command("Choose created character\n")
             if character in ([k for k in enemies.keys()]):
-                return enemies[character]
+                name = enemies[character]['name']
+                data[f"{n}. {name}"] = enemies[character]
+                print("Choose: Yes/No\n")
+                another = get_command("Do you want to add another character as event?:\n")
+                another = another.strip().upper()
+                match another:
+                    case 'Y' | 'YES':
+                        n += 1
+                    case 'N' | 'NO':
+                        return data
+                    case _:
+                        print("Wrong choose.")
             else:
                 print("Wrong choose.\n")
 
         elif choose in ("EM", "EMPTY"):
-            return empty_data()
+            print("How many?")
+            ammount = get_command()
+            try:
+                ammount = int(ammount)
+            except Exception:
+                print("Wrong number. You can type only whole numbers")
+            return empty_data(), ammount
 
 def create_event(data):
     return EventCreator(data, empty_logic())
