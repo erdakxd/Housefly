@@ -30,6 +30,7 @@ Debugger
         "back" - Backing to previous menu
         "exit" - Shuting down program
         "c mouse" - Exiting Debugger
+        "exit menu" - Backing to begging of program
 
 IN WORKS
     1. Event Creator

@@ -191,29 +191,7 @@ class MapEditor(Menu):
         pass
 
     def run(self):
-        terminal.clear()
-        map_editor.load_map()
-        print("Choose: Layer/Object/Tool/Map/Export")
-        choose = get_command("What do you want to change?:\n")
-        choose = choose.strip().upper()
-        match choose:
-            case 'L' | 'LAYER':
-                stack.append(Layer())
-                return
-            case 'O' | 'OBJECT':
-                stack.append(Texture())
-                return
-            case 'T' | 'TOOL':
-                stack.append(Tool())
-                return
-            case 'M' | 'MAP':
-                stack.append(GameMap())
-                return
-            case 'E' | 'EXPORT':
-                stack.append(Export())
-                return
-            case _:
-                print(f"\n{choose} is a incorrect choose.\n")
+        
 
 # ^^^^^^^^^^^^^^^^^^^^^
 # ^^^ EVENT CREATOR ^^^
@@ -591,15 +569,16 @@ class Size(Menu):
         return
 
 class Layer(Menu):
-    def __init__(self, game_map):
+    def __init__(self, game_map, layer):
         self.game_map = game_map
+        self.layer = layer
 
     def run(self):
         if self.game_map == map_creator.GameMap:
             map_creator.get_layer()
 
         else:
-            self.editor.layer = map_editor.set_layer()
+            self.layer = map_editor.set_layer(self.game_map)
         stack.pop()
         terminal.clear()
         return
