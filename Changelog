@@ -1,3 +1,17 @@
+*** 0.2.1 ***
+### Added
+    - Colision
+    - Map editor implemented to engine
+    
+### Fixed
+    - Command exit menu
+    - Event Creator
+    - Small bugs
+
+### Notes
+    - New feature: Map editor
+    - Colision only works for texture
+
 *** 0.2.0 ***
 ### Added
     - Logic random movement and A* for AI

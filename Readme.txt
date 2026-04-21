@@ -16,12 +16,13 @@ FEATURES
     1. Debugger (in works, but it is necessary to navigate trough engine)
     2. Character Creator
     3. Map Creator
-    4. Character Editor
-    5. Event Creator
-    6. Event Editor
-    7. Entities
-    8. Simple logic
-    9. Test Game
+    4. Map Editor
+    5. Character Editor
+    6. Event Creator
+    7. Event Editor
+    8. Entities
+    9. Simple logic
+    10. Test Game
 
 Debugger
     To enter debugger, enter - "c housefly"
@@ -33,10 +34,11 @@ Debugger
         "exit menu" - Backing to begging of program
 
 IN WORKS
-    1. Event Creator
-    2. Map Editor
-    3. Create/Save Project
-    4. Export Game
+    1. Raycasting
+    2. If statement
+    3. Show text and exit game logic
+    4. Create/Save Project
+    5. Export Game
 
 -- Q&A --
 WHY AM I CREATING GAME ENGINE?
