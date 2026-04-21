@@ -20,29 +20,42 @@ TEXTURES = {
 
 class EditMap:
     def __init__(self, game_map, textures):
-        self.game_map = game_map['1']
+        self.game_map = game_map
         self.layers_game_map = game_map.keys()
         self.textures = textures
 
         self.layer_choosed = None
         self.texture_choosed = None
         self.tool_choosed = None
-        self.edited_map = []
 
-    @staticmethod
-    def menu():
+    def run(self):
         while True:
-            menu_choice = print("Choose: Layer/Te-Texture/To-Tool/Edit/Map/Save")
-            manu_choice = menu_choice.strip().upper()
-            if menu_choice in ('L', 'LAYER', 'TE', 'TEXTURE', 'TO', 'TOOL', 'E', 'EDIT', 'M', 'MAP', 'S', 'SAVE'):
-                return menu_choice
-            else:
-                print("Wrong choose.")
+            print("Choose: Layer/Te-Texture/To-Tool/Edit/Map/Save")
+            menu_choice = get_command()
+            menu_choice = menu_choice.strip().upper()
+            match menu_choice:
+                case 'L' | 'LAYER':
+                    self.get_layer()
+                case 'TE' | 'TEXTURE':
+                    self.get_texture()
+                case 'TO' | 'TOOL':
+                    self.get_tool()
+                case 'E' | 'EDIT':
+                    if None in (self.texture_choosed, self.texture_choosed, self.tool_choosed):
+                        print("Before edit, please choose layer, texture and tool")
+                    else:
+                        self.edit()
+                case 'M' | 'MAP':
+                    self.show_map()
+                case 'S' | 'SAVE':
+                    self.save()
+                case _:
+                    print("Wrong choose.")
 
     def get_layer(self):
         while True:
             print(self.layers_game_map)
-            print("Choose layer:")
+            print("Choose layer:\n")
             layer = get_command()
             if layer in (self.layers_game_map):
                 self.layer_choosed = layer
@@ -50,93 +63,158 @@ class EditMap:
             else:
                 print('Wrong choose.\n')
 
-def load_map():
-    if not os.path.exists(MAP_PATH):
+    def get_texture(self):
+        while True:
+            print(self.textures)
+            print("Choose texture name:\n")
+            texture = get_command()
+            if texture in (self.textures):
+                self.texture_choosed = self.textures[texture]
+                return
+            else:
+                print('Wrong choose.\n')
+
+    def get_tool(self):
+        while True:
+            print("Choose: Pointer/Liner/Square")
+            tool = get_command()
+            tool = tool.strip().upper()
+            match tool:
+                case 'P' | 'POINTER':
+                    self.tool_choosed = 'pointer'
+                    return
+                case 'L' | 'LINER':
+                    self.tool_choosed = 'liner'
+                    return
+                case 'S' | 'SQUARE':
+                    self.tool_choosed = 'square'
+                    return
+                case _:
+                    print("Wrong choose.\n")
+
+    def edit(self):
+        print("\nTYPE 'B' or 'BACK' TO EXIT\n")
+        def enter_yx(arg):
+            while True:
+                print(f"Enter {arg}'Y', 'X':")
+                pos = get_command()
+                pos = pos.strip().upper()
+                if pos in ('B', 'BACK'):
+                    return pos, pos
+                else:
+                    pos = tuple(map(int, pos.split(',')))
+
+                    if pos[0] < 0 or pos[0] >= len(self.game_map[self.layer_choosed]):
+                        print("Invalid 'Y'")
+                    elif pos[1] < 0 or pos[1] >= len(self.game_map[self.layer_choosed][0]):
+                        print("Invalid 'X'")
+                    else:
+                        y = pos[0]
+                        x = pos[1]
+                        return y, x
+
+        while True:
+            for column in self.game_map[self.layer_choosed]:
+                for row in column:
+                    print(row, end=" ")
+                print()
+            match self.tool_choosed:
+                case 'pointer':
+                    y, x = enter_yx('')
+                    if y in ('B', 'BACK') or x in ('B', 'BACK'):
+                        return
+
+                    pointer = tools.Pointer(y, x)
+                    pointer.place(self.game_map[self.layer_choosed], self.texture_choosed)
+                
+                case 'liner': 
+                    fy, fx = enter_yx('first ')
+                    if fy in ('B', 'BACK') or fx in ('B', 'BACK'):
+                        return
+                    sy, sx = enter_yx('second ')
+                    if sy in ('B', 'BACK') or sx in ('B', 'BACK'):
+                        return
+
+                    liner = tools.Liner(fy, fx, sy, sx)
+                    liner.place(self.game_map[self.layer_choosed], self.texture_choosed)
+                 
+                case 'square':
+                    fy, fx = enter_yx('first ')
+                    if fy in ('B', 'BACK') or fx in ('B', 'BACK'):
+                        return
+                    sy, sx = enter_yx('second ')
+                    if sy in ('B', 'BACK') or sx in ('B', 'BACK'):
+                        return
+
+                    square = tools.Square(fy, fx, sy, sx)
+                    square.place(self.game_map[self.layer_choosed], self.texture_choosed)
+
+    def show_map(self):
+        while True:
+            print("Choose: All/One")
+            print("Do you want to print all layers or only one layer?")
+            choice = get_command()
+            choice = choice.strip().upper()
+            match choice:
+                case 'A' | 'ALL':
+                    for n, layer in self.game_map.items():
+                        print(f"Layer: {n}\n")
+                        for column in layer:
+                            for row in column:
+                                print(row, end=" ")
+                            print()
+                        print()
+                    return
+                case 'O' | 'ONE':
+                    print([k for k in self.game_map.keys()])
+                    print("Choose layer:")
+                    layer = get_command()
+                    if layer not in self.game_map.keys():
+                        print("Invalid number.\n")
+                    else:
+                        print()
+                        for column in self.game_map[layer]:
+                            for row in column:
+                                print(row, end=" ")
+                            print()
+                        print()
+                    return
+                case _:
+                    print('Wrong choice.')
+
+    def save(self):
+        while True:
+            print("Choice: Yes/No")
+            print("Do you want to save? It will overwrite previous map.")
+            choice = get_command()
+            choice = choice.strip().upper()
+            match choice:
+                case 'Y' | 'YES':
+                    data = self.game_map
+
+                    with open(MAP_PATH, 'w') as f:
+                        json.dump(data, f, indent=4)
+                    return
+                case 'N' | 'NO':
+                    return
+                case _:
+                    print("Invalid choice.\n")
+
+def load(file):
+    if not os.path.exists(file):
         raise NoJsonFile()
     
-    with open(MAP_PATH, "r") as f:
+    with open(file, "r") as f:
         return json.load(f)
-
-def menu():
-    while True:
-        menu_choice = print("Choose: Layer/Te-Texture/To-Tool/Edit/Map/Save")
-        manu_choice = menu_choice.strip().upper()
-        if menu_choice in ('L', 'LAYER', 'TE', 'TEXTURE', 'TO', 'TOOL', 'E', 'EDIT', 'M', 'MAP', 'S', 'SAVE'):
-            return menu_choice
-        else:
-            print("Wrong choose.\n")
-
-def layer():
-    while True:
-        pass
-    
-    
-repeat = True
-layer = '2'
-tool = "POINTER"
-
-wall = "X"
-floor = "•"
-textures = (wall, floor)
-texture = "•"
-
-# len_map_y = len(game_map['1'])
-# len_map_x = len(game_map['1'][0])
-
-def set_layer(game_map):    
-    while True:
-        print(f"Choose: {game_map.keys()}")
-        layer = get_command("Which layer you want to edit?:\n")
-        try:
-            for k in game_map.keys():
-                if layer == k:
-                    return layer
-                elif layer > max(game_map.keys()) or layer < min(game_map.keys()):
-                    print(f"Invalid number! You can choose only these layers: {game_map.keys()}.\n")
-                    break
-        except Exception:
-            print("Invalid number! Type only whole numbers.\n")
-            terminal.clear()
-
-def set_texture():
-    while True:
-        n = 0
-        print(f"List of textures:\n")
-        for t in textures:
-            n += 1
-            print(f"{n}. {t}")
-
-        try:
-            print(f"\nChoose: from 1 to {len(textures)}")
-            texture = get_command("Which texture you choose?:\n")
-            texture = int(texture)
-            if texture in (1, 2):
-                texture = textures[texture-1]
-                return texture
-            else:
-                print(f"'{texture}' is a incorrect texture. You can choose from 1 to {len(textures)}")
-
-        except Exception:
-            print(f"Invalid texture. You can choose from 1 to {len(textures)}")
-            terminal.clear()
-
-def set_tool():
-    pass
-
-def edit_map():
-    pass 
-
-def get_export():
-    pass
 
 # ************
 # *** MAIN ***
 # ************
 
 def main():
-    game_map = load_map()
+    game_map = load(MAP_PATH)
     test = EditMap(game_map, TEXTURES)
-    print(test.get_layer())
+    test.run()
 
 if __name__ == '__main__':
     main()

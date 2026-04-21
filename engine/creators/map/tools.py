@@ -22,8 +22,7 @@ class Tools():
                 print("Something went wrong")
 
 class Pointer(Tools):
-    def __init__(self, name, y, x):
-        self.name = name
+    def __init__(self, y, x):
         self.y = y
         self.x = x
     
@@ -31,8 +30,7 @@ class Pointer(Tools):
         map_structure[self.y][self.x] = structure
 
 class Liner(Tools):
-    def __init__(self, name, f_y, f_x, s_y, s_x):
-        self.name = name
+    def __init__(self, f_y, f_x, s_y, s_x):
         self.f_y = f_y
         self.f_x = f_x
         self.s_y = s_y
@@ -67,8 +65,7 @@ class Liner(Tools):
                 y1 += sy
 
 class Square(Tools):
-    def __init__(self, name, f_y, f_x, s_y, s_x):
-        self.name = name
+    def __init__(self, f_y, f_x, s_y, s_x):
         self.f_y = f_y
         self.f_x = f_x
         self.s_y = s_y
@@ -96,9 +93,8 @@ class Square(Tools):
             x1 += sx
             x2 -= sx
 
-pointer = Pointer("POINTER", 0, 0)
-liner = Liner("LINER", 0, 0, 0, 0)
-square = Square("SQUARE", 0, 0, 0, 0)
+def main():
+    pass
 
 if __name__ == '__main__':
-    pointer.get_position(False, 5)
+    main()
