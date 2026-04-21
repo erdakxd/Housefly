@@ -128,7 +128,8 @@ class EditorsMenu(Menu):
 
         match choose:
             case 'M' | 'MAP':
-                stack.append(MapEditor())
+                game_map = map_editor.load(map_editor.MAP_PATH)
+                stack.append(map_editor.EditMap(game_map, map_editor.TEXTURES))
                 return
             
             case 'P' | 'PLAYERS':
@@ -181,17 +182,6 @@ class CharacterEditor(Menu):
         choose = character_editor.set_edit(character_dict)
         stack.append(EditCharacter(character_dict, choose, self.character_path))
         return
-
-# ^^^^^^^^^^^^^^^^^^
-# ^^^ MAP EDITOR ^^^
-# ^^^^^^^^^^^^^^^^^^
-
-class MapEditor(Menu):
-    def __init__(self):
-        pass
-
-    def run(self):
-        
 
 # ^^^^^^^^^^^^^^^^^^^^^
 # ^^^ EVENT CREATOR ^^^
@@ -623,12 +613,12 @@ def main():
             current.run()
 
         except exceptions.Back:
-            stack.pop()
+            stack.pop(-1)
         except exceptions.ExitDebugger:
             pass
         except exceptions.NoJsonFile:
             print('No Json File.')
-            stack.pop()
+            stack.pop(-1)
         except exceptions.ExitMenu:
             stack.clear()
             stack.append(MainMenu())

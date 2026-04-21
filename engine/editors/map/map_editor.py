@@ -1,7 +1,7 @@
 import os
 import json
 from ...systems.commands import get_command
-from engine.core.exceptions import NoJsonFile
+from engine.core.exceptions import NoJsonFile, Back
 from ...creators.map import tools
 import engine.utils.terminal as terminal
 
@@ -51,6 +51,7 @@ class EditMap:
                     self.save()
                 case _:
                     print("Wrong choose.")
+            return
 
     def get_layer(self):
         while True:
