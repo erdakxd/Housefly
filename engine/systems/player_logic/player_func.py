@@ -1,4 +1,6 @@
-def eight_move_direction(arg, entity, _):
+from engine.core.colision import colision
+
+def eight_move_direction(arg, entity, _, layers):
     MOVE_MAP = {
         frozenset(("W")): (-1, 0),
         frozenset(("S")): (1, 0),
@@ -13,8 +15,19 @@ def eight_move_direction(arg, entity, _):
     # --- NEW MOVEMENT ---
     arg = frozenset(arg)
     cords = MOVE_MAP.get(arg, (0,0))
+    entity_layer = entity['Data']['layer']
+    entity_y = entity['Data']['y'] + cords[0]
+    entity_x = entity['Data']['x'] + cords[1]
+    try:
+        texture = layers[entity_layer][entity_y][entity_x]
+        if entity_y | entity_x < 0:
+            return
+    except IndexError:
+        return
 
-    entity['Data']['y'] += cords[0]
-    entity['Data']['x'] += cords[1]
-
-    return
+    if texture in colision.keys() and colision[texture] == True:
+        return
+    else:
+        entity['Data']['y'] += cords[0]
+        entity['Data']['x'] += cords[1]
+        return

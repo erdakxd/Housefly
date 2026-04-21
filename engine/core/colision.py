@@ -1,0 +1,4 @@
+colision = {
+    "•": False,
+    "X": True
+}

@@ -216,7 +216,7 @@ class MapCreator(Menu):
             choose = choose.strip().upper()
             match choose:
                 case 'L' | 'LAYERS':
-                    stack.append(Layer(self.game_map))
+                    stack.append(Layer(self.game_map, None))
                     return
                 case 'S' | 'SIZE':
                     stack.append(Size(self.game_map))

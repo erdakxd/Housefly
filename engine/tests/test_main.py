@@ -19,10 +19,10 @@ def load(path):
     with open(path, "r") as f:
         return json.load(f)
     
-def func_start(prompt, entity, entities, game_map, target):
+def func_start(prompt, entity, entities, game_map, target, layers):
     command = frozenset(prompt)
     if command in GAME_COMMANDS.keys():
-        func_return = GAME_COMMANDS[command](prompt, entity, entities)
+        func_return = GAME_COMMANDS[command](prompt, entity, entities, layers)
         return func_return
     if prompt == 'AI':
         for value in entity['Logic'].values(): 
@@ -123,10 +123,10 @@ def main():
                 ENEMIES.append(entity)
 
         for player in PLAYERS:
-            func_start(choose, player, ENTITIES, RENDER, "_")
+            func_start(choose, player, ENTITIES, RENDER, "_", LAYERS)
             
         for enemy in ENEMIES:
-            func_start('AI', enemy, ENTITIES, RENDER, PLAYERS[0])
+            func_start('AI', enemy, ENTITIES, RENDER, PLAYERS[0], LAYERS)
 
 
 if __name__ == '__main__':
