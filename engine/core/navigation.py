@@ -9,6 +9,7 @@ import engine.editors.map.map_editor as map_editor
 import engine.editors.character.character_editor as character_editor
 import engine.editors.event.event_editor as event_editor
 import engine.entities.entities as entities
+import engine.core.new_project as new_project
 
 stack = []
 
@@ -23,10 +24,18 @@ class Menu:
 # *****************
 
 class MainMenu(Menu):
+    def __init__ (self, project):
+        self.project = project
+
     def run(self):
         terminal.clear()
         while True:
             print("INFO: YOU CAN TYPE FIRST LETTER FROM OPTIONS AS A SHORTCUT.\nDOESN'T MATTER IF IT IS LOWER OR UPPER CASE.\n")
+
+            if self.project == None:
+                stack.append(new_project.Project())
+            else:
+                stack.pop()
             while True:
                         
                     print("Choose: Creator/Ed-Editor/En-Entities/Test Game")
@@ -605,7 +614,7 @@ class GameMap(Menu):
 # ************
 
 def main():
-    stack.append(MainMenu())
+    stack.append(MainMenu(None))
 
     while stack:
         try:

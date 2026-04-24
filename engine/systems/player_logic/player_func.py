@@ -31,3 +31,46 @@ def eight_move_direction(arg, entity, _, layers):
         entity['Data']['y'] += cords[0]
         entity['Data']['x'] += cords[1]
         return
+    
+# def raycasting():
+#     def bresenham(y1, x1, y2, x2):
+#         points = []
+
+#         dy = abs(y1 - y2)
+#         dx = abs(x1 - x2)
+
+#         sy = 1 if y1 < y2 else -1
+#         sx = 1 if x1 < x2 else -1
+
+#         err = dx - dy
+
+#         while True:
+#             points.append((y1, x1))
+
+
+#             if y1 == y2 and x1 == x2:
+#                 break
+
+#             e2 = 2 * err
+
+#             if e2 > -dy:
+#                 err -= dy
+#                 x1 += sx
+
+#             if e2 < dx:
+#                 err += dx
+#                 y1 += sy
+
+#         return points
+
+#     def is_visible(y1, x1, y2, x2):
+#         line = bresenham(y1, x1, y2, x2)
+#         for (y, x) in line:
+#             if (y, x) == (y1, x1):
+#                 continue
+#             if y < 0 or y >= len_map_y or x < 0 or x >= len_map_x:
+#                 return False
+#             if entities[y][x] == wall:
+#                 return (y, x) == (y2, x2) # Z False działa również ale zostaw z celem
+
+#         return True
