@@ -14,6 +14,8 @@ import engine.core.new_project as new_project
 stack = []
 
 class Menu:
+    path = None
+
     def run(self):
         pass
 
@@ -24,44 +26,35 @@ class Menu:
 # *****************
 
 class MainMenu(Menu):
-    def __init__ (self, project):
-        self.project = project
-
     def run(self):
         terminal.clear()
+        print("INFO: YOU CAN TYPE FIRST LETTER FROM OPTIONS AS A SHORTCUT.\nDOESN'T MATTER IF IT IS LOWER OR UPPER CASE.\n")
         while True:
-            print("INFO: YOU CAN TYPE FIRST LETTER FROM OPTIONS AS A SHORTCUT.\nDOESN'T MATTER IF IT IS LOWER OR UPPER CASE.\n")
-
-            if self.project == None:
-                stack.append(new_project.Project())
-            else:
-                stack.pop()
-            while True:
-                        
-                    print("Choose: Creator/Ed-Editor/En-Entities/Test Game")
-                    choose = get_command("Which creator you want to use?:\n")
-                    choose = choose.strip().upper()
-                    print()
-
-                    match choose:
-                        case 'C' | 'CREATOR':
-                            stack.append(CreatorsMenu())
-                            return
-
-                        case 'ED' | 'EDITOR':
-                            stack.append(EditorsMenu())
-                            return
                             
-                        case 'EN' | 'ENTITIES':
-                            stack.append(EntitiesMap())
-                            return
-                            
-                        case 'T' | 'TEST GAME':
-                            stack.append(TestGame())
-                            return
+            print("Choose: Creator/Ed-Editor/En-Entities/Test Game")
+            choose = get_command("Which creator you want to use?:\n")
+            choose = choose.strip().upper()
+            print()
 
-                        case _:
-                            print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
+            match choose:
+                case 'C' | 'CREATOR':
+                    stack.append(CreatorsMenu())
+                    return
+
+                case 'ED' | 'EDITOR':
+                    stack.append(EditorsMenu())
+                    return
+                                
+                case 'EN' | 'ENTITIES':
+                    stack.append(EntitiesMap())
+                    return
+                                
+                case 'T' | 'TEST GAME':
+                    stack.append(TestGame())
+                    return
+
+                case _:
+                    print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
 
 # *****************
 # *** TEST GAME ***
@@ -614,7 +607,29 @@ class GameMap(Menu):
 # ************
 
 def main():
-    stack.append(MainMenu(None))
+    while True:
+        try:
+            if Menu.path == None:
+                stack.append(new_project.Project())
+                current = stack[-1]
+                current.run()
+                Menu.path = current.path
+            else:
+                stack.clear()
+                break
+
+        except exceptions.Back:
+            stack.pop(-1)
+        except exceptions.ExitDebugger:
+            pass
+        except exceptions.NoJsonFile:
+            print('No Json File.')
+            stack.pop(-1)
+        except exceptions.ExitMenu:
+            stack.clear()
+            stack.append(MainMenu())
+
+    stack.append(MainMenu())
 
     while stack:
         try:

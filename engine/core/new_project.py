@@ -1,9 +1,10 @@
 import os
 from tkinter import Tk, filedialog, simpledialog
 from engine.systems.commands import get_command
-from engine.core.navigation import MainMenu
 
 class Project:
+    path = ""
+
     def run(self):
         while True:
             print("Choose: New/Load\n")
@@ -17,7 +18,8 @@ class Project:
                     path = filedialog.askdirectory(title="Choose diection.")
 
                     if path:
-                        MainMenu.path = path
+                        self.path = path
+                        return
 
                 case 'N' | 'NEW':
                     while True:
