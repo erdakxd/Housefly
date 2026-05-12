@@ -10,12 +10,18 @@ import engine.editors.character.character_editor as character_editor
 import engine.editors.event.event_editor as event_editor
 import engine.entities.entities as entities
 import engine.core.new_project as new_project
+import state
+import engine.tests.test_state as test_state
 
-stack = []
+class Stack:
+    def __init__(self):
+        self.stack = []
+
+stack = Stack()
+
+stack = stack.stack
 
 class Menu:
-    path = None
-
     def run(self):
         pass
 
@@ -29,9 +35,10 @@ class MainMenu(Menu):
     def run(self):
         terminal.clear()
         print("INFO: YOU CAN TYPE FIRST LETTER FROM OPTIONS AS A SHORTCUT.\nDOESN'T MATTER IF IT IS LOWER OR UPPER CASE.\n")
+        print(state.state.path)
         while True:
                             
-            print("Choose: Creator/Ed-Editor/En-Entities/Test Game")
+            print("Choose: Creator/Ed-Editor/En-Entities/Test Game/Project")
             choose = get_command("Which creator you want to use?:\n")
             choose = choose.strip().upper()
             print()
@@ -52,6 +59,10 @@ class MainMenu(Menu):
                 case 'T' | 'TEST GAME':
                     stack.append(TestGame())
                     return
+                
+                case 'P' | 'PROJECT':
+                    stack.append(new_project.Project())
+                    return
 
                 case _:
                     print(f"'{choose}' is a incorrect choose. Please choose only character or map.")
@@ -62,7 +73,8 @@ class MainMenu(Menu):
 
 class TestGame(Menu):
     def run(self):
-        test_game.main()
+        project_path = test_state.TestState(state.state.path)
+        test_game.main(project_path.path)
         stack.pop()
         return
 
@@ -77,7 +89,8 @@ class EntitiesMap(Menu):
         self.event = None
 
     def run(self):
-        self.game_map = entities.load(entities.GAME_MAP)
+        path = entities.game_map_path()
+        self.game_map = entities.load(path)
         entities.entities_size(self.game_map)
         
         self.event = entities.menu_entities(self.events, self.event, self.game_map)
@@ -130,16 +143,17 @@ class EditorsMenu(Menu):
 
         match choose:
             case 'M' | 'MAP':
-                game_map = map_editor.load(map_editor.MAP_PATH)
+                path = map_editor.map_path()
+                game_map = map_editor.load(path)
                 stack.append(map_editor.EditMap(game_map, map_editor.TEXTURES))
                 return
             
             case 'P' | 'PLAYERS':
-                stack.append(CharacterEditor("engine/data/players/players.json"))
+                stack.append(CharacterEditor(f"{state.state.path}/data/players/players.json"))
                 return
 
             case 'ENE' | 'ENEMIES':
-                stack.append(CharacterEditor("engine/data/enemies/enemies.json"))
+                stack.append(CharacterEditor(f"{state.state.path}/data/enemies/enemies.json"))
                 return
             
             case 'EV' | 'EVENT':
@@ -607,45 +621,33 @@ class GameMap(Menu):
 # ************
 
 def main():
+
     while True:
-        try:
-            if Menu.path == None:
-                stack.append(new_project.Project())
-                current = stack[-1]
-                current.run()
-                Menu.path = current.path
-            else:
-                stack.clear()
+        stack.append(MainMenu())
+        stack.append(new_project.Project())
+
+        while True:
+            stack[-1].run()
+            if state.state.path != None:
                 break
 
-        except exceptions.Back:
-            stack.pop(-1)
-        except exceptions.ExitDebugger:
-            pass
-        except exceptions.NoJsonFile:
-            print('No Json File.')
-            stack.pop(-1)
-        except exceptions.ExitMenu:
-            stack.clear()
-            stack.append(MainMenu())
+        stack.pop(-1)
 
-    stack.append(MainMenu())
+        while stack:
+            try:
+                current = stack[-1]
+                current.run()
 
-    while stack:
-        try:
-            current = stack[-1]
-            current.run()
-
-        except exceptions.Back:
-            stack.pop(-1)
-        except exceptions.ExitDebugger:
-            pass
-        except exceptions.NoJsonFile:
-            print('No Json File.')
-            stack.pop(-1)
-        except exceptions.ExitMenu:
-            stack.clear()
-            stack.append(MainMenu())
+            except exceptions.Back:
+                stack.pop(-1)
+            except exceptions.ExitDebugger:
+                pass
+            except exceptions.NoJsonFile:
+                print('No Json File.')
+                stack.pop(-1)
+            except exceptions.ExitMenu:
+                stack.clear()
+                stack.append(MainMenu())
 
 
 if __name__ == '__main__':

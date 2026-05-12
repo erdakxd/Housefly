@@ -2,14 +2,15 @@ import json
 import os
 from engine.core.exceptions import NoJsonFile
 from engine.systems.commands import get_command
+import state
 
 # *****************
 # *** VARIABLES ***
 # *****************
 
-PLAYERS = "engine/data/events/events_players.json"
-ENEMIES = "engine/data/events/events_enemies.json"
-OBJECTS = "engine/data/events/events_objects.json"
+PLAYERS = f"{state.state.path}/data/events/events_players.json"
+ENEMIES = f"{state.state.path}/data/events/events_enemies.json"
+OBJECTS = f"{state.state.path}/data/events/events_objects.json"
 
 # ***************
 # *** CLASSES ***
@@ -23,6 +24,13 @@ class EventEdit():
 # *** FUNCTIONS ***
 # *****************
 
+def players_path():
+    return f"{state.state.path}/data/events/events_players.json"
+def enemies_path():
+    return f"{state.state.path}/data/events/events_enemies.json"
+def objects_path():
+    return f"{state.state.path}/data/events/events_objects.json"
+
 def load(path_load):
     if not os.path.exists(path_load):
         raise NoJsonFile()
@@ -35,7 +43,7 @@ def choose_event():
         print("Choose: Players/Enemies/Objects")
         choose = get_command()
         choose = choose.strip().upper()
-        if choose in ('P', 'PLAYERs', 'E', 'ENEMIES', 'O', 'OBJECTS'):
+        if choose in ('P', 'PLAYERS', 'E', 'ENEMIES', 'O', 'OBJECTS'):
             return choose
         else:
             print("Wrong choose.\n")
@@ -43,14 +51,14 @@ def choose_event():
 def initial_choice(choose):
     match choose:
         case 'P' | 'PLAYERS':
-            file = load(PLAYERS)
-            file_path = PLAYERS
+            file_path = players_path()
+            file = load(file_path)
         case 'E' | 'ENEMIES':
-            file = load(ENEMIES)
-            file_path = ENEMIES
+            file_path = enemies_path()
+            file = load(file_path)
         case 'O' | 'OBJECTS':
-            file = load(OBJECTS)
-            file_path = OBJECTS
+            file_path = objects_path()
+            file = load(file_path)
     return file, file_path
 
 def menu_event_choice(file):

@@ -3,6 +3,7 @@ import os
 import shutil
 from ...systems.commands import get_command
 import engine.utils.terminal as terminal
+import state
 
 # ***************
 # *** CLASSES ***
@@ -238,8 +239,8 @@ def get_export(file_name, char_dict):
             case 'Y' | 'YES':
                 while True:
                     folder_name = get_command("\nHow would you like to name it?:\n")
-                    f"engine/data/{folder_name}"
-                    directory_path =  f"engine/data/{folder_name}"
+                    f"{state.state.path}/data/{folder_name}"
+                    directory_path =  f"{state.state.path}/data/{folder_name}"
                     try:
                         os.mkdir(directory_path)
                         print(f"\nFolder {folder_name} was created.\n")
@@ -258,9 +259,9 @@ def get_export(file_name, char_dict):
                 print("Wrong answer. Please write: Yes or No.\n")
 
     if folder_name:
-        file_path = f"engine/data/{folder_name}/{file_name}.json"
+        file_path = f"{state.state.path}/data/{folder_name}/{file_name}.json"
     else:
-        file_path = f"engine/data/{file_name}.json"
+        file_path = f"{state.state.path}/data/{file_name}.json"
 
     try:
         data = {}
@@ -335,8 +336,8 @@ def main():
             case 'Y' | 'YES':
                 while True:
                     folder_name = get_command("How would you like to name it?:\n")
-                    f"engine/data/{folder_name}"
-                    directory_path =  f"engine/data/{folder_name}"
+                    f"{state.state.path}/data/{folder_name}"
+                    directory_path =  f"{state.state.path}/data/{folder_name}"
                     print()
                     try:
                         os.mkdir(directory_path)

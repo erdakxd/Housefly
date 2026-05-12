@@ -3,9 +3,10 @@ import json
 from ...systems.commands import get_command
 from engine.core.exceptions import NoJsonFile
 import engine.utils.terminal as terminal
+import state
 
-PLAYERS_PATH = "engine/data/players/players.json"
-ENEMIES_PATH = "engine/data/enemies/enemies.json"
+PLAYERS_PATH = f"{state.state.path}/data/players/players.json"
+ENEMIES_PATH = f"{state.state.path}/data/enemies/enemies.json"
 
 # ***************
 # *** CLASSES ***

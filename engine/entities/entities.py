@@ -3,15 +3,12 @@ import os
 import copy
 import engine.utils.terminal as terminal
 from engine.systems.commands import get_command
+import state
 
 # *****************
 # *** VARIABLES ***
 # *****************
 
-GAME_MAP = "engine/data/map/game_map.json"
-PLAYERS = "engine/data/events/events_players.json"
-ENEMIES = "engine/data/events/events_enemies.json"
-OBJECTS = "engine/data/events/events_objects.json"
 ENTITIES = []
 TEST_ENTITIES = []
 
@@ -22,6 +19,15 @@ TEST_ENTITIES = []
 # *****************
 # *** FUNCTIONS ***
 # *****************
+
+def game_map_path():
+    return f"{state.state.path}/data/map/game_map.json"
+def players_path():
+    return f"{state.state.path}/data/events/events_players.json"
+def enemies_path():
+    return f"{state.state.path}/data/events/events_enemies.json"
+def objects_path():
+    return f"{state.state.path}/data/events/events_objects.json"
 
 def load(json_file):
     with open(json_file, "r") as f:
@@ -91,15 +97,18 @@ def choose_event(events):
         choose = choose.strip().upper()
         match choose:
             case 'P' | 'PLAYER':
-                players = load(PLAYERS)
+                path = players_path()
+                players = load(path)
                 events = local_func(players)
                 return events
             case 'E' | 'ENEMY':
-                enemies = load(ENEMIES)
+                path = enemies_path()
+                enemies = load(path)
                 events = local_func(enemies)
                 return events
             case 'O' | 'OBJECT':
-                objects = load(OBJECTS)
+                path = objects_path()
+                objects = load(path)
                 events = local_func(objects)
                 return events
             case _:
@@ -166,7 +175,7 @@ def delete_event(event, game_map):
 
 
 def export():
-    file_path = "engine/data/entities/entities.json"
+    file_path = f"{state.state.path}/data/entities/entities.json"
     data = TEST_ENTITIES
 
     with open(file=file_path, mode="w") as file:

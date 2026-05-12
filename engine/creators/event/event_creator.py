@@ -11,9 +11,7 @@ import json
 import os
 from ...systems.commands import get_command
 import engine.utils.terminal as terminal
-
-PLAYER_PATH = 'engine/data/players/players.json'
-ENEMY_PATH = 'engine/data/enemies/enemies.json'
+import state
 
 # *****************
 # *** VARIABLES ***
@@ -37,11 +35,11 @@ class EventCreator():
             break
         match e_type:
             case 'player':
-                file_path = "engine/data/events/events_players.json" 
+                file_path = f"{state.state.path}/data/events/events_players.json" 
             case 'enemy':
-                file_path = "engine/data/events/events_enemies.json" 
+                file_path = f"{state.state.path}/data/events/events_enemies.json" 
             case 'object':
-                file_path = "engine/data/events/events_objects.json"
+                file_path = f"{state.state.path}/data/events/events_objects.json"
 
         data = {}
         for key, value in self.data.items():
@@ -55,6 +53,13 @@ class EventCreator():
 # *****************
 # *** FUNCTIONS ***
 # *****************
+
+def player_path():
+    return f"{state.state.path}/data/players/players.json"
+
+def enemy_path():
+    return f"{state.state.path}/data/enemies/enemies.json"
+
 
 def new_event():
     while True:
@@ -71,8 +76,9 @@ def print_dict(choose):
     n = 1
     while True:
         if choose in ("P", "PLAYER"):
+            player_json = player_path()
             print(data)
-            with open(PLAYER_PATH, "r") as f:
+            with open(player_json, "r") as f:
                 players = json.load(f)
             print([player for player in players])
             character = get_command("Choose created character\n")
@@ -93,7 +99,8 @@ def print_dict(choose):
                 print("Wrong choose.\n")
 
         elif choose in ("EN", "ENEMY"):
-            with open(ENEMY_PATH, "r") as f:
+            enemy_json = enemy_path()
+            with open(enemy_json, "r") as f:
                 enemies = json.load(f)
             print([enemy for enemy in enemies])
             character = get_command("Choose created character\n")

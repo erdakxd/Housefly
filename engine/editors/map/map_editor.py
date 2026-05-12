@@ -4,8 +4,7 @@ from ...systems.commands import get_command
 from engine.core.exceptions import NoJsonFile, Back
 from ...creators.map import tools
 import engine.utils.terminal as terminal
-
-MAP_PATH = "engine/data/map/game_map.json"
+import state
 
 TILES = {
     "floor": {"solid": False},
@@ -94,7 +93,8 @@ class EditMap:
                     print("Wrong choose.\n")
 
     def edit(self):
-        print("\nTYPE 'B' or 'BACK' TO EXIT\n")
+        terminal.clear()
+        print("\nTYPE 'B' OR 'BACK' TO EXIT\n")
         def enter_yx(arg):
             while True:
                 print(f"Enter {arg}'Y', 'X':")
@@ -192,14 +192,18 @@ class EditMap:
             match choice:
                 case 'Y' | 'YES':
                     data = self.game_map
+                    path = map_path()
 
-                    with open(MAP_PATH, 'w') as f:
+                    with open(path, 'w') as f:
                         json.dump(data, f, indent=4)
                     return
                 case 'N' | 'NO':
                     return
                 case _:
                     print("Invalid choice.\n")
+
+def map_path():
+    return f"{state.state.path}/data/map/game_map.json"
 
 def load(file):
     if not os.path.exists(file):

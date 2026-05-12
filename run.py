@@ -1,8 +1,9 @@
 import engine.core.navigation as navigation
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 
 def main():
+
     navigation.main()
 
 if __name__ == '__main__':

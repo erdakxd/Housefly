@@ -4,9 +4,10 @@ import engine.utils.terminal as terminal
 from engine.systems.commands import get_command
 import engine.systems.player_logic.player_logic as player_logic
 import engine.systems.ai_logic.ai_logic as ai_logic
+import state
+import engine.tests.test_state as test_state
+import sys
 
-GAME_MAP = "engine/data/map/game_map.json"
-ENTITIES_FILE = "engine/data/entities/entities.json"
 MAP_LOGIC = player_logic.DICT_COMMANDS
 GAME_COMMANDS = {}
 AI_LOGIC = ai_logic.AI_LOGIC
@@ -14,6 +15,11 @@ AI_LOGIC = ai_logic.AI_LOGIC
 # *****************
 # *** FUNCTIONS ***
 # *****************
+
+def game_map_path(project_path):
+    return f"{project_path}/data/map/game_map.json"
+def entities_path(project_path):
+    return f"{project_path}/data/entities/entities.json"
 
 def load(path):
     with open(path, "r") as f:
@@ -37,8 +43,15 @@ def func_start(prompt, entity, entities, game_map, target, layers):
 
 def main():
     # --- IMPORTING JSON FILES
-    game_map = load(GAME_MAP)
-    ENTITIES = load(ENTITIES_FILE)
+
+    project_path = sys.argv[1]
+
+    path_map = game_map_path(project_path)
+    game_map = load(path_map)
+
+    path_entities = entities_path(project_path)
+    ENTITIES = load(path_entities)
+    
     LAYERS = []
     RENDER = []
     PLAYERS = []

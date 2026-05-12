@@ -3,6 +3,7 @@ import os
 import shutil
 from ...systems.commands import get_command
 import engine.utils.terminal as terminal
+import state
 
 class GameMap:
     def __init__(self):
@@ -48,7 +49,7 @@ def get_export(file_name, data):
         case 'Y' | 'YES':
             while True:
                 folder_name = get_command("How would you like to name it?:\n")
-                directory_path =  f"engine/data/{folder_name}"
+                directory_path =  f"{state.state.path}/data/{folder_name}"
                 try:
                     os.mkdir(directory_path)
                     print(f"Folder {folder_name} was created.")
@@ -67,9 +68,9 @@ def get_export(file_name, data):
             print("Wrong answer. Please write: Yes or No.\n")
 
     if folder_name:
-        file_path = f"engine/data/{folder_name}/{file_name}.json"
+        file_path = f"{state.state.path}/data/{folder_name}/{file_name}.json"
     else:
-        file_path = f"engine/data/{file_name}.json"
+        file_path = f"{state.state.path}/data/{file_name}.json"
 
     # try:
 
